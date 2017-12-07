@@ -16,11 +16,22 @@ process.once('exit', function () {
     process.emit('cleanup');
 });
 
+// Do app specific cleaning before exiting.
+process.once('beforeExit', function () {
+    process.emit('cleanup');
+});
+
 // PM2 Cluster shutdown message.
 process.on('message', function (msg) {
     if (msg === 'shutdown') {
-        process.exit(1);
+        process.exit(0);
     }
+});
+
+// Catch SIGHUP event and exit normally.
+process.once('SIGHUP', function () {
+    console.log('SIGHUP');
+    process.exit(1);
 });
 
 // Catch SIGINT event and exit normally.
@@ -29,10 +40,28 @@ process.once('SIGINT', function () {
     process.exit(2);
 });
 
+// Catch SIGQUIT event and exit normally.
+process.once('SIGQUIT', function () {
+    console.log('SIGQUIT');
+    process.exit(3);
+});
+
+// Catch SIGABRT event and exit normally.
+process.once('SIGABRT', function () {
+    console.log('SIGABRT');
+    process.exit(6);
+});
+
+// Catch SIGBREAK event and exit normally.
+process.once('SIGBREAK', function () {
+    console.log('SIGBREAK');
+    process.exit(6);
+});
+
 // Catch SIGTERM event and exit normally.
 process.once('SIGTERM', function () {
     console.log('SIGTERM');
-    process.exit(3);
+    process.exit(15);
 });
 
 // Catch uncaught exceptions and exit normally.
